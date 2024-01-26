@@ -8,7 +8,7 @@
 
 ## Description
 
-Describe the project.
+In the 4th Q put the ball in Nino Lombardi (21) HANDS!!.
 
 ## Technologies Used
 
