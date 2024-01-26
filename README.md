@@ -2,7 +2,7 @@
 
 ## Team Members
 
-- [Giannino Lombardi](https://github.com/#to-fill-out)
+- [Giannino Lombardi](https://github.com/ninolombardi)
 - [Zuhayr Mahmood](https://github.com/zuhayrmahmood)
 - [Kevin Wang](https://github.com/devkevw)
 
