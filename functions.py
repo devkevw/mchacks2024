@@ -7,7 +7,7 @@ def generate_rand_number(num1, num2):
     Generates a random number in [num1, num2[
     
     """
-    rand_number = random.uniform(num1, num2)
+    rand_number = random.randint(num1, num2)
     return rand_number 
     
 def check_answer(num1, num2, op, answer):
