@@ -23,14 +23,14 @@ OPERATORS_G3 = ["+", "-", "x", "/"]
  
 
 class Player: 
-    def __init__(self, occupied_tile, name):
+    def __init__(self, occupied_tile,name):
         """
         Initializes a Player object 
 
         """
 
         self.occupied_tile = occupied_tile
-        is_turn = False
+        self.is_turn = False
         self.name = name
 
     def move_to(self,tile):
@@ -78,7 +78,7 @@ class Game:
         player_number = 1
         while (i < self.num_players):
             name_str = "Player " + str(player_number)
-            new_player = Player(Tile(1,None, False, False, False, False), name_str)
+            new_player = Player((Tile(1,None, False, False, False, False)), name_str)
             self.players.append(new_player)
             i += 1
             player_number += 1
@@ -90,6 +90,7 @@ class Game:
         while (i < self.num_players):
             if (self.players[i].is_turn == True): 
                 num_turn = i
+            i += 1
 
         if (num_turn == -1):
             self.players[0].is_turn = True
@@ -207,7 +208,13 @@ class Game:
         self.ladders.append(Ladder(self.tiles[34], self.tiles[22]))
     
 
-
+    def check_if_game_over(self):
+        game_over = False
+        for player in self.players:
+            if (player.occupied_tile.num == 36): 
+                game_over = True
+            
+        return game_over
 
 
 
