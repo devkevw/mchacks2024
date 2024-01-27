@@ -202,7 +202,13 @@ class Game:
     
     def add_ladders(self): 
         self.ladders[0] = Ladder(self.tiles[17], self.tiles[5])
-        
+        self.ladders[1] = Ladder(self.tiles[13], self.tiles[10])
+        self.ladders[2] = Ladder(self.tiles[21], self.tiles[14])
+        self.ladders[3] = Ladder(self.tiles[27], self.tiles[20])
+        self.ladders[4] = Ladder(self.tiles[34], self.tiles[22])
+    
+    
+
 
 
 
