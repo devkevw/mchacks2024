@@ -78,8 +78,8 @@ class Game:
         i = 0
         while (i < self.num_players):
             player_number = 1
-            name = input("Enter name for Player ", player_number)
-            new_player = Player(START_TILE, name)
+            name_str = "Player " + player_number
+            new_player = Player(START_TILE, name_str)
             self.players[i] = new_player
             i += 1
             player_number += 1
@@ -207,7 +207,7 @@ class Game:
         self.ladders[3] = Ladder(self.tiles[27], self.tiles[20])
         self.ladders[4] = Ladder(self.tiles[34], self.tiles[22])
     
-    
+
 
 
 
