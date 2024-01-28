@@ -2,7 +2,7 @@ from typing import Any
 import pygame
 import math
 import sys
-from tile import *
+from game import *
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
@@ -145,9 +145,26 @@ class SideDisplay(pygame.sprite.Sprite):
         font = pygame.font.Font(None, 50)
         die_surface = font.render("Roll Die", True, (0, 0, 0))
         die_rect = die_surface.get_rect()
-        die_rect.center = (x_pos, SCREEN_HEIGHT // 2)
+        die_rect.center = (x_pos, SCREEN_HEIGHT // 1.8)
+
+        # Draw the rounded rectangle
+        pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
         screen.blit(die_surface, die_rect)
 
+        if die_rect.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        else:
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+
+
+    # # Draw the rounded rectangle
+    # pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 15)
+
+    # # Draw the text on top of the button background
+    # screen.blit(die_surfac
         # math equation
 
 
