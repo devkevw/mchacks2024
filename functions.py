@@ -1,6 +1,4 @@
-import pygame
 import random 
-import math 
 
 def generate_rand_number(num1, num2):
     """

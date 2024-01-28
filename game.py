@@ -72,6 +72,7 @@ class Game:
 
         i = 0
         player_number = 1
+
         while (i < self.num_players):
             name_str = "Player " + str(player_number)
             new_player = Player((Tile(1,None, False, False, False, False)), name_str)
@@ -83,6 +84,7 @@ class Game:
         
         num_turn = -1
         i = 0
+
         while (i < self.num_players):
             if (self.players[i].is_turn == True): 
                 num_turn = i
@@ -205,6 +207,7 @@ class Game:
 
     def check_if_game_over(self):
         game_over = False
+        
         for player in self.players:
             if (player.occupied_tile.num == 36): 
                 game_over = True
