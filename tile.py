@@ -100,7 +100,7 @@ class Game:
             self.players[0].is_turn = True
         else:
             self.players[num_turn].is_turn = False 
-            self.players[num_turn + 1] = True 
+            self.players[num_turn + 1].is_turn = True 
 
     
     def create_board(self):
