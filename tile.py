@@ -43,7 +43,7 @@ class Snake:
 
         """
 
-        self.head = head_tile
+        self.head_tile = head_tile
         self.tail_tile = tail_tile
 
 
@@ -105,10 +105,9 @@ class Game:
     
     def create_board(self):
         self.tiles.append(Tile(1,None, False, False, False, False))
-        i = 1
         num_tile = 2
         
-        while (i <= 36):
+        while (num_tile <= 36):
             if (self.level == 1):
                 op = OPERATORS_G1[random.randint(0, 1)]
             elif (self.level == 2): 
@@ -116,75 +115,75 @@ class Game:
             elif (self.level == 3): 
                 op = OPERATORS_G3[random.randint(0, 3)]
 
-            if (i == 2):
+            if (num_tile == 2):
                 self.tiles.append(Tile(num_tile, op, False, True, False, False))
                 num_tile += 1 
                 
-            elif (i == 5):
+            elif (num_tile == 5):
                 self.tiles.append(Tile(num_tile, op, False, True, False, False))
                 num_tile += 1 
 
-            elif (i == 6):
+            elif (num_tile == 6):
                 self.tiles.append(Tile(num_tile, op, False, False, True, False))
                 num_tile += 1 
                 
-            elif (i == 11):
+            elif (num_tile == 11):
                 self.tiles.append(Tile(num_tile, op, False, False, True, False))
                 num_tile += 1 
 
-            elif (i == 12):
+            elif (num_tile == 12):
                 self.tiles.append(Tile(num_tile, op, False, True, False, False))
                 num_tile += 1 
                 
-            elif (i == 14):
+            elif (num_tile == 14):
                 self.tiles.append(Tile(num_tile, op, False, False, False, True))
                 num_tile += 1
 
-            elif (i == 15):
+            elif (num_tile == 15):
                 self.tiles.append(Tile(num_tile, op, False, False, True, False))
                 num_tile += 1 
 
-            elif (i == 16):
+            elif (num_tile == 16):
                 self.tiles.append(Tile(num_tile, op, True, False, False, False))
                 num_tile += 1 
             
-            elif (i == 18):
+            elif (num_tile == 18):
                 self.tiles.append(Tile(num_tile, op, False, False, False, True))
                 num_tile += 1
             
-            elif (i == 20):
+            elif (num_tile == 20):
                 self.tiles.append(Tile(num_tile, op, True, True, False, False))
                 num_tile += 1
             
-            elif (i == 21):
+            elif (num_tile == 21):
                 self.tiles.append(Tile(num_tile, op, False, False, True, False))
                 num_tile += 1
             
-            elif (i == 22):
+            elif (num_tile == 22):
                 self.tiles.append(Tile(num_tile, op, False, True, False, True))
                 num_tile += 1
             
-            elif (i == 23):
+            elif (num_tile == 23):
                 self.tiles.append(Tile(num_tile, op, False, False, True, False))
                 num_tile += 1
             
-            elif (i == 25):
+            elif (num_tile == 25):
                 self.tiles.append(Tile(num_tile, op, True, False, False, False))
                 num_tile += 1
             
-            elif (i == 28):
+            elif (num_tile == 28):
                 self.tiles.append(Tile(num_tile, op, False, False, False, True))
                 num_tile += 1
 
-            elif (i == 31):
+            elif (num_tile == 31):
                 self.tiles.append(Tile(num_tile, op, True, False, False, False))
                 num_tile += 1
             
-            elif (i == 34):
+            elif (num_tile == 34):
                 self.tiles.append(Tile(num_tile, op, True, False, False, False))
                 num_tile += 1
             
-            elif (i == 35):
+            elif (num_tile == 35):
                 self.tiles.append(Tile(num_tile, op, False, False, False, True))
                 num_tile += 1
 
@@ -192,13 +191,13 @@ class Game:
                 self.tiles.append(Tile(num_tile, op, False, False, False, False))
                 num_tile += 1   
 
-            i += 1
 
     def add_snakes(self):
         self.snakes.append(Snake(self.tiles[15], self.tiles[1]))
         self.snakes.append(Snake(self.tiles[19], self.tiles[4]))
         self.snakes.append(Snake(self.tiles[30], self.tiles[19]))
         self.snakes.append(Snake(self.tiles[33], self.tiles[21]))
+        self.snakes.append(Snake(self.tiles[24], self.tiles[11]))
     
     def add_ladders(self): 
         self.ladders.append(Ladder(self.tiles[17], self.tiles[5]))
