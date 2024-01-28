@@ -12,7 +12,11 @@ In the 4th Q put the ball in Nino Lombardi (21) HANDS!!.
 
 ## Technologies Used
 
-List technolgoies used.
+List technologies used.
+
+## Problems Encountered
+
+List some problems we faced and possible resolutions if we had to do it again.
 
 ## Demo
 
