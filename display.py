@@ -28,9 +28,23 @@ class Button():
         self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale) ))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.clicked = False
 
     def draw(self):
+        action = False
+        mouse_position = pygame.mouse.get_pos()
+
+        #check collision
+        if self.rect.collidepoint(mouse_position):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = True
+
+            if pygame.mouse.get_pressed()[0] == 0:
+                self.clicked = False
+
         screen.blit(self.image, (self.rect.x, self.rect.y))
+        return action
 
 #just a cheeky button creation
 start_img = pygame.image.load('images/start_btn.png').convert_alpha()
@@ -253,10 +267,19 @@ while True:
     if game_active:
         # all_tiles.update()
         screen.fill((255,255,255))
-        # all_tiles.draw(screen)
-        start_button.draw()
-        exit_button.draw()
+
+        #draw the buttons and tiles
+
+        if start_button.draw():
+            print("Start")
+
+        if exit_button.draw():
+            pygame.quit()
+            sys.exit()
+            print("Exit")
+
         all_tiles.draw(screen)
+
         for tile in all_tiles.sprites():
             tile.draw_num()
 
