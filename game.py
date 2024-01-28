@@ -1,8 +1,4 @@
-import pygame
-import math
 import random 
-
-
 
 class Tile: 
     def __init__(self, num, operator, is_snakehead, is_snaketail, is_ladderbottom, is_laddertop):
