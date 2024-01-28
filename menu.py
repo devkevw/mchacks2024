@@ -1,7 +1,6 @@
 import pygame
-import math
 import sys
-from game import *
+
 
 
 SCREEN_WIDTH = 1200
