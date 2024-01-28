@@ -1,4 +1,4 @@
-# McHacks 11 Hackathon: Learn & Climb: Snake Scholars
+# McHacks 11 Hackathon: 'Learn & Climb: Snake Scholars'
 
 ## Team Members
 
