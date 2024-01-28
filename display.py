@@ -17,8 +17,27 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Snakes and Ladders')
 clock = pygame.time.Clock()
 
+# game variables
+game_paused = False
 
 # classes
+class Button():
+    def __init__(self, x, y, image, scale):
+        width = image.get_width()
+        height = image.get_height()
+        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale) ))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+
+    def draw(self):
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+#just a cheeky button creation
+start_img = pygame.image.load('images/start_btn.png').convert_alpha()
+exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
+
+
+
 class Tile(pygame.sprite.Sprite): 
     def __init__(self, num, operator, is_snakehead, is_snaketail, is_ladderbottom, is_laddertop):
         """
@@ -220,7 +239,11 @@ def draw_snakes(all_tiles):
     
 # display game itself
 while True:
-    for event in pygame.event.get(): 
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                game_paused = True
+                print("Pause")
         if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -230,6 +253,8 @@ while True:
         # all_tiles.update()
         screen.fill((255,255,255))
         # all_tiles.draw(screen)
+        start_button.draw()
+        exit_button.draw()
         all_tiles.draw(screen)
         for tile in all_tiles.sprites():
             tile.draw_num()
