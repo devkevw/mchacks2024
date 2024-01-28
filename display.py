@@ -32,7 +32,7 @@ class Button():
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-#just a cheeky button creation
+# just a cheeky button creation
 start_img = pygame.image.load('images/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
 
@@ -94,27 +94,57 @@ class Tile(pygame.sprite.Sprite):
 
             screen.blit(image, image_rect)
         
+class Player: 
+    def __init__(self, occupied_tile, color):
+        """
+        Initializes a Player object 
 
+        """
 
-class sideDisplay(pygame.sprite.Sprite): 
-    def __init__(self):
+        self.occupied_tile = occupied_tile
+        self.is_turn = False
+        self.color = color
+
+    def move_to(self, tile):
+        self.occupied_tile = tile
+        
+
+class SideDisplay(pygame.sprite.Sprite): 
+    def __init__(self, player):
         super().__init__()
+        self.player = player
 
-    def draw_text(self):
-        # draw the number
-        font = pygame.font.Font(None, 28)
-        text_surface = font.render('Turn', True, (0, 0, 0))
+    def draw_text(self): 
+        x_pos = 6 * 116 + 2 + ((SCREEN_WIDTH - 6 * 116 + 2) // 2)
+
+        # turn
+        font = pygame.font.Font(None, 50)
+        text_surface = font.render("Player's Turn:", True, (0, 0, 0))
         text_rect = text_surface.get_rect()
-        text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        text_rect.center = (x_pos, SCREEN_HEIGHT // 4)
         screen.blit(text_surface, text_rect)
+
+        # player
+        pygame.draw.circle(screen, self.player.color, (x_pos, SCREEN_HEIGHT / 2.8), 24)
+
+        # roll die
+        font = pygame.font.Font(None, 50)
+        die_surface = font.render("Roll Die", True, (0, 0, 0))
+        die_rect = die_surface.get_rect()
+        die_rect.center = (x_pos, SCREEN_HEIGHT // 2)
+        screen.blit(die_surface, die_rect)
+
+        # math equation
+
+
 
         
 
 
 # GROUPS and FUNCTIONS
-        
+player1 = Player(None, 'Red')
 side_display = pygame.sprite.GroupSingle()
-side_display.add(sideDisplay())
+side_display.add(SideDisplay(player1))
        
 all_tiles = pygame.sprite.Group()
 # generate tiles
@@ -254,8 +284,8 @@ while True:
         # all_tiles.update()
         screen.fill((255,255,255))
         # all_tiles.draw(screen)
-        start_button.draw()
-        exit_button.draw()
+        # start_button.draw()
+        # exit_button.draw()
         all_tiles.draw(screen)
         for tile in all_tiles.sprites():
             tile.draw_num()
