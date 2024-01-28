@@ -1,57 +1,26 @@
-from typing import Any
 import pygame
 import math
 import sys
-from game import *
+import random
 
+
+# constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
-game_active = True
 NUM_TILES = 36
 OPERATORS = ['+', '-', 'x', '/']
-level = 1;
-rolldie = False
+game_active = True
+level = 3
 
+
+# initialize screen
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Snakes and Ladders')
+pygame.display.set_caption('Learn & Climb: Snake Scholars')
 clock = pygame.time.Clock()
 
-# game variables
-game_paused = False
 
 # classes
-class Button():
-    def __init__(self, x, y, image, scale):
-        width = image.get_width()
-        height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale) ))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.clicked = False
-
-    def draw(self):
-        action = False
-        mouse_position = pygame.mouse.get_pos()
-
-        #check collision
-        if self.rect.collidepoint(mouse_position):
-            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-                self.clicked = True
-                action = True
-
-            if pygame.mouse.get_pressed()[0] == 0:
-                self.clicked = False
-
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-        return action
-
-#just a cheeky button creation
-start_img = pygame.image.load('images/start_btn.png').convert_alpha()
-exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
-
-
-
 class Tile(pygame.sprite.Sprite): 
     def __init__(self, num, operator, is_snakehead, is_snaketail, is_ladderbottom, is_laddertop):
         """
@@ -75,6 +44,7 @@ class Tile(pygame.sprite.Sprite):
         y_pos = (7 - math.ceil(num/tiles_in_row)) * size + 2
         self.rect = self.image.get_rect(bottomleft = (x_pos, y_pos))
 
+        # attributes
         self.num = num
         self.operator = operator
         self.is_snakehead = is_snakehead
@@ -105,8 +75,24 @@ class Tile(pygame.sprite.Sprite):
             image = pygame.transform.scale(op_image, (16, 16))
             image_rect = image.get_rect()
             image_rect.bottomright = (self.rect.right - 15, self.rect.bottom - 15)
-
             screen.blit(image, image_rect)
+
+    def draw_circles(self, colors):
+        # draw circles in the middle of the tile
+        circle_radius = 15
+        circle_colors = colors
+
+        center_x = self.rect.centerx
+        center_y = self.rect.centery
+
+        for i, color in enumerate(circle_colors):
+            # calculate the position for each circle
+            angle = i * (2 * math.pi / len(circle_colors))
+            circle_x = center_x + int(circle_radius * math.cos(angle))
+            circle_y = center_y + int(circle_radius * math.sin(angle))
+
+            pygame.draw.circle(screen, color, (circle_x, circle_y), circle_radius)
+
         
 class Player:
     def __init__(self, occupied_tile, color):
@@ -114,7 +100,6 @@ class Player:
         Initializes a Player object
 
         """
-
         self.occupied_tile = occupied_tile
         self.is_turn = False
         self.color = color
@@ -125,10 +110,14 @@ class Player:
 
 class SideDisplay(pygame.sprite.Sprite):
     def __init__(self, player):
+        """
+        Initializes a SideDisplay object
+
+        """
         super().__init__()
         self.player = player
 
-    def draw_text(self):
+    def draw_text(self, die_num): 
         x_pos = 6 * 116 + 2 + ((SCREEN_WIDTH - 6 * 116 + 2) // 2)
 
         # turn
@@ -142,42 +131,35 @@ class SideDisplay(pygame.sprite.Sprite):
         pygame.draw.circle(screen, self.player.color, (x_pos, SCREEN_HEIGHT / 2.8), 24)
 
         # roll die
-        font = pygame.font.Font(None, 50)
         die_surface = font.render("Roll Die", True, (0, 0, 0))
         die_rect = die_surface.get_rect()
         die_rect.center = (x_pos, SCREEN_HEIGHT // 1.8)
 
-        # Draw the rounded rectangle
+        # rectangle for die button
         pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
         screen.blit(die_surface, die_rect)
 
         if die_rect.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
-            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
+        # die number
+        num_surface = font.render(str(die_num), True, (0, 0, 0))
+        num_rect = num_surface.get_rect()
+        num_rect.center = (x_pos, SCREEN_HEIGHT // 1.5)
+        screen.blit(num_surface, num_rect)
+            
 
-
-    # # Draw the rounded rectangle
-    # pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 15)
-
-    # # Draw the text on top of the button background
-    # screen.blit(die_surfac
-        # math equation
-
-
-
-
-
-
-# GROUPS and FUNCTIONS
+# groups and functions
 player1 = Player(None, 'Red')
 side_display = pygame.sprite.GroupSingle()
 side_display.add(SideDisplay(player1))
-       
 all_tiles = pygame.sprite.Group()
+
+
 # generate tiles
 def generate_Tiles(level): 
     for i in range (1, 37):
@@ -192,67 +174,49 @@ def generate_Tiles(level):
         # tiles
         if i == 1: 
             tile = Tile(i, None, False, False, False, False)
+        elif i == 2:
+            tile = (Tile(i, op, False, True, False, False))
+        elif i == 5:
+            tile = (Tile(i, op, False, True, False, False))
+        elif i == 6:
+            tile = (Tile(i, op, False, False, True, False))  
+        elif i == 11:
+            tile = (Tile(i, op, False, False, True, False))     
+        elif i == 12:
+            tile = (Tile(i, op, False, True, False, False))     
+        elif i == 14:
+            tile = (Tile(i, op, False, False, False, True)) 
+        elif i == 15:
+            tile = (Tile(i, op, False, False, True, False))
+        elif i == 16:
+            tile = (Tile(i, op, True, False, False, False))      
+        elif i == 18:
+            tile = (Tile(i, op, False, False, False, True))
+        elif i == 20:
+            tile = (Tile(i, op, True, True, False, False))
+        elif i == 21:
+            tile = (Tile(i, op, False, False, True, False)) 
+        elif i == 22:
+            tile = (Tile(i, op, False, True, False, True))
+        elif i == 23:
+            tile = (Tile(i, op, False, False, True, False)) 
+        elif i == 25:
+            tile = (Tile(i, op, True, False, False, False))
+        elif i == 28:
+            tile = (Tile(i, op, False, False, False, True))  
+        elif i == 31:
+            tile = (Tile(i, op, True, False, False, False))
+        elif i == 34:
+            tile = (Tile(i, op, True, False, False, False))  
+        elif i == 35:
+            tile = (Tile(i, op, False, False, False, True))
         else: 
-            if (i == 2):
-                tile = (Tile(i, op, False, True, False, False))
-                
-            elif (i == 5):
-                tile = (Tile(i, op, False, True, False, False))
-                 
-            elif (i == 6):
-                tile = (Tile(i, op, False, False, True, False))  
-                
-            elif (i == 11):
-                tile = (Tile(i, op, False, False, True, False))
-                 
-            elif (i == 12):
-                tile = (Tile(i, op, False, True, False, False))
-                 
-            elif (i == 14):
-                tile = (Tile(i, op, False, False, False, True))
-                
-            elif (i == 15):
-                tile = (Tile(i, op, False, False, True, False))
-
-            elif (i == 16):
-                tile = (Tile(i, op, True, False, False, False))
-                 
-            elif (i == 18):
-                tile = (Tile(i, op, False, False, False, True))
-                
-            elif (i == 20):
-                tile = (Tile(i, op, True, True, False, False))
-                
-            elif (i == 21):
-                tile = (Tile(i, op, False, False, True, False))
-                
-            elif (i == 22):
-                tile = (Tile(i, op, False, True, False, True))
-                
-            elif (i == 23):
-                tile = (Tile(i, op, False, False, True, False))
-                
-            elif (i == 25):
-                tile = (Tile(i, op, True, False, False, False))
-                
-            elif (i == 28):
-                tile = (Tile(i, op, False, False, False, True))
-                
-            elif (i == 31):
-                tile = (Tile(i, op, True, False, False, False))
-                
-            elif (i == 34):
-                tile = (Tile(i, op, True, False, False, False))
-                
-            elif (i == 35):
-                tile = (Tile(i, op, False, False, False, True))
-                
-            else: 
-                tile = (Tile(i, op, False, False, False, False))
+            tile = (Tile(i, op, False, False, False, False))
                    
         all_tiles.add(tile)
 
 generate_Tiles(level)
+
 
 def draw_ladders(all_tiles): 
      tiles_list = [
@@ -268,6 +232,7 @@ def draw_ladders(all_tiles):
         tile2 = all_tiles.sprites()[tiles[1]-1]
         pygame.draw.line(screen, (139, 69, 19), tile1.rect.center, tile2.rect.center, 5)
     
+
 def draw_snakes(all_tiles): 
     tiles_list = [
          [2, 16],
@@ -284,70 +249,45 @@ def draw_snakes(all_tiles):
         tile1 = all_tiles.sprites()[tiles[0] - 1]
         tile2 = all_tiles.sprites()[tiles[1] - 1]
 
-        # Calculate the direction vector and normalized distance
+        # calculate the direction vector and normalized distance
         direction = pygame.math.Vector2(tile2.rect.center[0] - tile1.rect.center[0],
                                          tile2.rect.center[1] - tile1.rect.center[1])
         normalized_direction = direction.normalize()
 
-        # Draw dotted line
+        # draw dotted line
         dot_position = pygame.math.Vector2(tile1.rect.center)
         while dot_position.distance_to(tile2.rect.center) >= dot_spacing:
             pygame.draw.circle(screen, (34, 139, 34), (int(dot_position.x), int(dot_position.y)), dot_size)
             dot_position += normalized_direction * dot_spacing
     
 
-start_button = Button(800, 400, start_img, 1)
-exit_button = Button(800, 200, exit_img, 1)
-    
 # display game itself
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                game_paused = True
-                print("Pause")
         if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-    
     if game_active:
-        # all_tiles.update()
         screen.fill((255,255,255))
 
-        #draw the buttons and tiles
-
-        if start_button.draw():
-            print("Start")
-
-        if exit_button.draw():
-            pygame.quit()
-            sys.exit()
-            print("Exit")
-
-        # all_tiles.draw(screen)
-        # start_button.draw()
-        # exit_button.draw()
+        # draw board
         all_tiles.draw(screen)
 
         for tile in all_tiles.sprites():
             tile.draw_num()
+            if tile.num == 1:
+                tile.draw_circles([(0, 255, 0), (0, 0, 255), (255, 255, 0)])
+            elif tile.num == 5: 
+                tile.draw_circles([(255, 0, 0)])
 
-        side_display.sprites()[0].draw_text()
+        side_display.sprites()[0].draw_text(5)
 
-        # draw ladders and snakes
         draw_ladders(all_tiles)
         draw_snakes(all_tiles)
-
-    else: None
+            
+    else: None # to fill with menu screen, or end game screen
 
     pygame.display.update()
     clock.tick(60)
                         
-
-    
-
-
-
-
-
