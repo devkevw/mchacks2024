@@ -338,11 +338,8 @@ while True:
         # draw ladders and snakes
         draw_ladders(all_tiles)
         draw_snakes(all_tiles)
-            
-
 
     else: None
-
 
     pygame.display.update()
     clock.tick(60)
