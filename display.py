@@ -37,7 +37,6 @@ start_img = pygame.image.load('images/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
 
 
-
 class Tile(pygame.sprite.Sprite): 
     def __init__(self, num, operator, is_snakehead, is_snaketail, is_ladderbottom, is_laddertop):
         """
@@ -93,6 +92,24 @@ class Tile(pygame.sprite.Sprite):
             image_rect.bottomright = (self.rect.right - 15, self.rect.bottom - 15)
 
             screen.blit(image, image_rect)
+
+    def draw_circles(self, colors):
+        # Draw four circles in the middle of the tile
+        circle_radius = 15
+        circle_colors = colors
+
+        center_x = self.rect.centerx
+        center_y = self.rect.centery
+
+        for i, color in enumerate(circle_colors):
+            # Calculate the position for each circle
+            angle = i * (2 * math.pi / len(circle_colors))
+            circle_x = center_x + int(circle_radius * math.cos(angle))
+            circle_y = center_y + int(circle_radius * math.sin(angle))
+
+            # Draw the circle
+            pygame.draw.circle(screen, color, (circle_x, circle_y), circle_radius)
+
         
 class Player: 
     def __init__(self, occupied_tile, color):
@@ -114,7 +131,7 @@ class SideDisplay(pygame.sprite.Sprite):
         super().__init__()
         self.player = player
 
-    def draw_text(self): 
+    def draw_text(self, die_num): 
         x_pos = 6 * 116 + 2 + ((SCREEN_WIDTH - 6 * 116 + 2) // 2)
 
         # turn
@@ -133,30 +150,24 @@ class SideDisplay(pygame.sprite.Sprite):
         die_rect = die_surface.get_rect()
         die_rect.center = (x_pos, SCREEN_HEIGHT // 1.8)
 
-        # Draw the rounded rectangle
+        # draw the rounded rectangle
         pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
         screen.blit(die_surface, die_rect)
 
         if die_rect.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
-            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
-
-
-    # # Draw the rounded rectangle
-    # pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 15)
-
-    # # Draw the text on top of the button background
-    # screen.blit(die_surfac
-        # math equation
-
-
-
-        
-
+        # draw the die number
+        font = pygame.font.Font(None, 50)
+        num_surface = font.render(str(die_num), True, (0, 0, 0))
+        num_rect = num_surface.get_rect()
+        num_rect.center = (x_pos, SCREEN_HEIGHT // 1.5)
+        screen.blit(num_surface, num_rect)
+            
 
 # GROUPS and FUNCTIONS
 player1 = Player(None, 'Red')
@@ -164,6 +175,7 @@ side_display = pygame.sprite.GroupSingle()
 side_display.add(SideDisplay(player1))
        
 all_tiles = pygame.sprite.Group()
+
 # generate tiles
 def generate_Tiles(level): 
     for i in range (1, 37):
@@ -178,6 +190,7 @@ def generate_Tiles(level):
         # tiles
         if i == 1: 
             tile = Tile(i, None, False, False, False, False)
+            # tile.draw_circles()
         else: 
             if (i == 2):
                 tile = (Tile(i, op, False, True, False, False))
@@ -307,7 +320,13 @@ while True:
         for tile in all_tiles.sprites():
             tile.draw_num()
 
-        side_display.sprites()[0].draw_text()
+            if tile.num == 1:
+                tile.draw_circles([(0, 255, 0), (0, 0, 255), (255, 255, 0)])
+
+            elif tile.num == 5: 
+                tile.draw_circles([(255, 0, 0)])
+
+        side_display.sprites()[0].draw_text(5)
 
         # draw ladders and snakes
         draw_ladders(all_tiles)
@@ -315,7 +334,7 @@ while True:
             
 
 
-    else: None
+    else: None # to fill with menu screen, or end game screen
 
 
     pygame.display.update()
