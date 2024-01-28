@@ -21,3 +21,7 @@ We ran into issues with the user interface portion of the project. Lack of prior
 ## Demo
 
 Check out our [Devpost](https://devpost.com/software/educational-snakes-and-ladders?ref_content=user-portfolio&ref_feature=in_progress)!
+
+![Menu Screen](images/screenshots/menu.png)
+
+![User Interface](images/screenshots/interface.png)
