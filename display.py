@@ -235,7 +235,8 @@ def draw_snakes(all_tiles):
             dot_position += normalized_direction * dot_spacing
     
 
-
+start_button = Button(800, 400, start_img, 1)
+exit_button = Button(800, 200, exit_img, 1)
     
 # display game itself
 while True:
