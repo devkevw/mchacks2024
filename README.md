@@ -1,4 +1,4 @@
-# McHacks 11 Hackathon: Project NAME
+# McHacks 11 Hackathon: Learn & Climb: Snake Scholars
 
 ## Team Members
 
@@ -20,4 +20,4 @@ We ran into issues with the user interface portion of the project. Lack of prior
 
 ## Demo
 
-Check out our [Devpost]([https://devpost.com/software/#update-devpost-link](https://devpost.com/software/educational-snakes-and-ladders?ref_content=user-portfolio&ref_feature=in_progress)https://devpost.com/software/educational-snakes-and-ladders?ref_content=user-portfolio&ref_feature=in_progress)!
+Check out our [Devpost](https://devpost.com/software/educational-snakes-and-ladders?ref_content=user-portfolio&ref_feature=in_progress)
