@@ -1,8 +1,6 @@
-import pygame 
 import functions
 import tile 
-import math 
-import random 
+
 
 num_users = int(input("Please enter the number of players: "))
 game_level = int(input("Please select a level of difficulty (1/2/3): "))
@@ -18,8 +16,11 @@ game.add_snakes()
 
 while (game.check_if_game_over() == False):
     game.pick_player_turn()
+
     for player in game.players:
+
         if (player.is_turn):
+
             print(player.name + ", it is your turn.")
             current_position = player.occupied_tile.num
             dice_roll = functions.generate_rand_number(1,6)
@@ -35,12 +36,14 @@ while (game.check_if_game_over() == False):
             question_str = "Solve the following: " + str(num1) + " " + operator + " " + str(num2)
             print(question_str)
             ans = int(input("Your Answer: "))
-
             correct_answer = functions.check_answer(num1, num2, operator, ans)
+
             if (correct_answer == True): 
                 print("Correct Answer!")
                 new_tile = game.tiles[current_position + dice_roll - 1]
+
                 if (new_tile.is_ladderbottom == True):
+
                     for ladder in game.ladders:
                         if ladder.bottom_tile == new_tile:
                             print("Congrats! You're moving up the ladder.")
@@ -57,7 +60,9 @@ while (game.check_if_game_over() == False):
 
             else:
                 new_tile = game.tiles[current_position + dice_roll - 1]
+
                 if (new_tile.is_snakehead == True):
+
                     for snake in game.snakes:
                         if snake.head_tile == new_tile:
                             print("Uh oh! You're sliding down the snake...")
