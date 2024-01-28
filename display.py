@@ -2,7 +2,7 @@ from typing import Any
 import pygame
 import math
 import sys
-from tile import *
+from game import *
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
@@ -28,14 +28,27 @@ class Button():
         self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale) ))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.clicked = False
 
     def draw(self):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+        action = False
+        mouse_position = pygame.mouse.get_pos()
 
-# just a cheeky button creation
+        #check collision
+        if self.rect.collidepoint(mouse_position):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = True
+
+            if pygame.mouse.get_pressed()[0] == 0:
+                self.clicked = False
+
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+        return action
+
+#just a cheeky button creation
 start_img = pygame.image.load('images/start_btn.png').convert_alpha()
 exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
-
 
 
 class Tile(pygame.sprite.Sprite): 
@@ -93,11 +106,29 @@ class Tile(pygame.sprite.Sprite):
             image_rect.bottomright = (self.rect.right - 15, self.rect.bottom - 15)
 
             screen.blit(image, image_rect)
+
+    def draw_circles(self, colors):
+        # Draw four circles in the middle of the tile
+        circle_radius = 15
+        circle_colors = colors
+
+        center_x = self.rect.centerx
+        center_y = self.rect.centery
+
+        for i, color in enumerate(circle_colors):
+            # Calculate the position for each circle
+            angle = i * (2 * math.pi / len(circle_colors))
+            circle_x = center_x + int(circle_radius * math.cos(angle))
+            circle_y = center_y + int(circle_radius * math.sin(angle))
+
+            # Draw the circle
+            pygame.draw.circle(screen, color, (circle_x, circle_y), circle_radius)
+
         
-class Player: 
+class Player:
     def __init__(self, occupied_tile, color):
         """
-        Initializes a Player object 
+        Initializes a Player object
 
         """
 
@@ -107,14 +138,14 @@ class Player:
 
     def move_to(self, tile):
         self.occupied_tile = tile
-        
 
-class SideDisplay(pygame.sprite.Sprite): 
+
+class SideDisplay(pygame.sprite.Sprite):
     def __init__(self, player):
         super().__init__()
         self.player = player
 
-    def draw_text(self): 
+    def draw_text(self, die_num): 
         x_pos = 6 * 116 + 2 + ((SCREEN_WIDTH - 6 * 116 + 2) // 2)
 
         # turn
@@ -131,15 +162,26 @@ class SideDisplay(pygame.sprite.Sprite):
         font = pygame.font.Font(None, 50)
         die_surface = font.render("Roll Die", True, (0, 0, 0))
         die_rect = die_surface.get_rect()
-        die_rect.center = (x_pos, SCREEN_HEIGHT // 2)
+        die_rect.center = (x_pos, SCREEN_HEIGHT // 1.8)
+
+        # draw the rounded rectangle
+        pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10))
         screen.blit(die_surface, die_rect)
 
-        # math equation
+        if die_rect.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        else:
+            pygame.draw.rect(screen, (192, 192, 192), die_rect.inflate(20, 10), 2)
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
-
-
-        
-
+        # draw the die number
+        font = pygame.font.Font(None, 50)
+        num_surface = font.render(str(die_num), True, (0, 0, 0))
+        num_rect = num_surface.get_rect()
+        num_rect.center = (x_pos, SCREEN_HEIGHT // 1.5)
+        screen.blit(num_surface, num_rect)
+            
 
 # GROUPS and FUNCTIONS
 player1 = Player(None, 'Red')
@@ -147,6 +189,7 @@ side_display = pygame.sprite.GroupSingle()
 side_display.add(SideDisplay(player1))
        
 all_tiles = pygame.sprite.Group()
+
 # generate tiles
 def generate_Tiles(level): 
     for i in range (1, 37):
@@ -161,6 +204,7 @@ def generate_Tiles(level):
         # tiles
         if i == 1: 
             tile = Tile(i, None, False, False, False, False)
+            # tile.draw_circles()
         else: 
             if (i == 2):
                 tile = (Tile(i, op, False, True, False, False))
@@ -283,14 +327,32 @@ while True:
     if game_active:
         # all_tiles.update()
         screen.fill((255,255,255))
+
+        #draw the buttons and tiles
+
+        if start_button.draw():
+            print("Start")
+
+        if exit_button.draw():
+            pygame.quit()
+            sys.exit()
+            print("Exit")
+
         # all_tiles.draw(screen)
         # start_button.draw()
         # exit_button.draw()
         all_tiles.draw(screen)
+
         for tile in all_tiles.sprites():
             tile.draw_num()
 
-        side_display.sprites()[0].draw_text()
+            if tile.num == 1:
+                tile.draw_circles([(0, 255, 0), (0, 0, 255), (255, 255, 0)])
+
+            elif tile.num == 5: 
+                tile.draw_circles([(255, 0, 0)])
+
+        side_display.sprites()[0].draw_text(5)
 
         # draw ladders and snakes
         draw_ladders(all_tiles)
@@ -298,7 +360,7 @@ while True:
             
 
 
-    else: None
+    else: None # to fill with menu screen, or end game screen
 
 
     pygame.display.update()
